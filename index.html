@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iTHINK Before I Click - Lasallian Digital Leader Game</title>
+    <!-- Tailwind CSS for high-fidelity layouts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for premium typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+        }
+        .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        /* Custom Glowing and Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(20, 184, 166, 0.2);
+        }
+        .green-glow {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+        .purple-glow {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+        .text-glow {
+            text-shadow: 0 0 8px rgba(20, 184, 166, 0.6);
+        }
+        /* Scrollbar customizing */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(20, 184, 166, 0.5);
+            border-radius: 3px;
+        }
+        /* Custom animations */
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        .bg-pulse {
+            animation: pulse-slow 8s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col items-center justify-center p-2 md:p-4 overflow-x-hidden relative">
+
+    <!-- Ambient Glowing Backgrounds -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-[120px] bg-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] bg-pulse" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Main Game Box with constrained 16:9 feel and scalable aspect-ratio container -->
+    <div class="w-full max-w-5xl glass-panel rounded-3xl overflow-hidden shadow-2xl relative z-10 border border-emerald-500/30 flex flex-col justify-between" style="min-height: 85vh;">
+        
+        <!-- Header HUD -->
+        <header class="border-b border-slate-800 bg-slate-950/80 px-4 py-3 flex flex-wrap items-center justify-between gap-3 relative">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-500 p-1.5 rounded-lg">
+                    <!-- SVG Animo-style Shield -->
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-sm md:text-base font-bold heading-font tracking-wide bg-gradient-to-r from-emerald-400 via-teal-300 to-purple-400 bg-clip-text text-transparent">
+                        iTHINK Before I Click
+                    </h1>
+                    <span class="text-[10px] text-teal-400/80 tracking-widest uppercase">Lasallian Digital Leadership NXGBL</span>
+                </div>
+            </div>
+
+            <!-- Global Sound and Stats Panel -->
+            <div class="flex items-center gap-4">
+                <!-- Sound Toggle -->
+                <button id="musicToggleBtn" onclick="toggleMusic()" class="flex items-center gap-1.5 px-3 py-1 bg-slate-900 border border-slate-700 hover:border-teal-500/50 rounded-full text-xs transition duration-200 text-slate-300" title="Toggle procedural synthesizer music">
+                    <span id="musicIcon" class="inline-block animate-pulse text-purple-400">🔇</span>
+                    <span id="musicText" class="font-semibold text-[11px] uppercase tracking-wider">Music Off</span>
+                </button>
+
+                <!-- Points Widget -->
+                <div class="bg-slate-900 px-3 py-1 rounded-full border border-teal-500/30 flex items-center gap-2">
+                    <span class="text-yellow-400 text-xs font-semibold">✨ SCORE:</span>
+                    <span id="hudScore" class="text-white font-bold heading-font text-sm">0</span>
+                </div>
+                
+                <!-- Level Quick Indicator -->
+                <div id="hudLevelBadge" class="hidden sm:inline-block bg-purple-950/60 border border-purple-500/30 px-3 py-1 rounded-full text-[11px] font-bold text-purple-300 uppercase tracking-widest">
+                    Lvl 1/5
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dynamic Screen Container -->
+        <main id="gameContent" class="flex-grow flex flex-col justify-between p-4 md:p-6 relative">
+            <!-- Content will be injected dynamically via JS -->
+            <div class="flex items-center justify-center py-20">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-400"></div>
+            </div>
+        </main>
+
+        <!-- Footer bar -->
+        <footer class="bg-slate-950/90 border-t border-slate-800/80 px-6 py-3 flex flex-wrap justify-between items-center text-xs text-slate-400 gap-2">
+            <div class="flex items-center gap-1.5">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Active Learner Anytime, Anywhere</span>
+            </div>
+            <div class="flex gap-4">
+                <span><strong>I</strong>ntegrity • <strong>T</strong>rustworthiness • <strong>H</strong>umility • <strong>I</strong>nclusiveness • <strong>N</strong>obility • <strong>K</strong>indness</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Audio Synth Logic -->
+    <script>
+        let audioCtx = null;
+        let bbgOscillator = null;
+        let bgGainNode = null;
+        let isMusicPlaying = false;
+        let playInterval = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Procedural synthesiser playing a cozy lofi-game chord progression
+        function startSynthesizer() {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            bgGainNode = audioCtx.createGain();
+            bgGainNode.gain.setValueAtTime(0.08, audioCtx.currentTime); // Low background volume
+            bgGainNode.connect(audioCtx.destination);
+
+            let beat = 0;
+            const chords = [
+                [261.63, 329.63, 392.00, 493.88], // Cmaj7 (Peaceful learning)
+                [349.23, 440.00, 523.25, 659.25], // Fmaj7 (Lasallian Community)
+                [293.66, 349.23, 440.00, 587.33], // Dm7 (Challenging Situation)
+                [329.63, 392.00, 493.88, 587.33]  // Em7 (Resolution)
+            ];
+
+            function playChordTone(freq, time, duration) {
+                if (!audioCtx || !isMusicPlaying) return;
+                let osc = audioCtx.createOscillator();
+                let oscGain = audioCtx.createGain();
+                
+                osc.type = 'triangle'; // Gentle round wave tone
+                osc.frequency.setValueAtTime(freq, time);
+                
+                oscGain.gain.setValueAtTime(0, time);
+                oscGain.gain.linearRampToValueAtTime(0.04, time + 0.1);
+                oscGain.gain.exponentialRampToValueAtTime(0.0001, time + duration - 0.05);
+
+                osc.connect(oscGain);
+                oscGain.connect(bgGainNode);
+                osc.start(time);
+                osc.stop(time + duration);
+            }
+
+            function playTick() {
+                if (!isMusicPlaying) return;
+                const now = audioCtx.currentTime;
+                const chord = chords[Math.floor(beat / 4) % chords.length];
+                
+                // Play chord pads
+                chord.forEach((freq, idx) => {
+                    playChordTone(freq, now, 1.8);
+                });
+
+                // Play high melody spark occasionally
+                if (beat % 2 === 0) {
+                    const melodyNote = chord[Math.floor(Math.random() * chord.length)] * 2;
+                    playChordTone(melodyNote, now + 0.5, 0.4);
+                }
+                beat++;
+            }
+
+            playTick();
+            playInterval = setInterval(playTick, 2000);
+        }
+
+        function stopSynthesizer() {
+            if (playInterval) {
+                clearInterval(playInterval);
+                playInterval = null;
+            }
+            if (bgGainNode) {
+                try { bgGainNode.disconnect(); } catch(e){}
+            }
+        }
+
+        function toggleMusic() {
+            const musicIcon = document.getElementById('musicIcon');
+            const musicText = document.getElementById('musicText');
+            
+            if (!isMusicPlaying) {
+                isMusicPlaying = true;
+                musicIcon.textContent = '🔊';
+                musicIcon.classList.add('animate-bounce');
+                musicText.textContent = 'Music On';
+                try {
+                    startSynthesizer();
+                } catch(e) {
+                    console.log("Audio couldn't start yet: ", e);
+                }
+            } else {
+                isMusicPlaying = false;
+                musicIcon.textContent = '🔇';
+                musicIcon.classList.remove('animate-bounce');
+                musicText.textContent = 'Music Off';
+                stopSynthesizer();
+            }
+        }
+
+        // Quick retro audio effects generator
+        function playSfx(type) {
+            if (!audioCtx || !isMusicPlaying) return;
+            try {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    // Upward bright scale
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.3);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
+                } else if (type === 'wrong') {
+                    // Downward sliding buzz
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(110, audioCtx.currentTime + 0.4);
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.45);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.45);
+                } else if (type === 'click') {
+                    // Tiny high pop
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    </script>
+
+    <!-- Game Engine State and Data -->
+    <script>
+        // Custom anime avatar SVG components mapped to selection
+        const AVATARS = {
+            riku: {
+                name: 'Riku (Tech Optimist)',
+                color: 'emerald',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="46" fill="#1e293b" stroke="#10b981" stroke-width="4"/><path d="M25,80 C25,65 35,55 50,55 C65,55 75,65 75,80" fill="none" stroke="#10b981" stroke-width="4"/><path d="M30,45 C35,40 45,40 50,45 C55,40 65,40 70,45" fill="none" stroke="#34d399" stroke-width="3"/><circle cx="42" cy="48" r="3" fill="#10b981"/><circle cx="58" cy="48" r="3" fill="#10b981"/><path d="M35,30 C30,35 25,50 30,55 C35,58 65,58 70,55 C75,50 70,35 65,30 C60,25 40,25 35,30 Z" fill="none" stroke="#059669" stroke-width="2"/><path d="M48,51 Q50,53 52,51" fill="none" stroke="#10b981" stroke-width="3"/></svg>`
+            },
+            maya: {
+                name: 'Maya (Digital Artist)',
+                color: 'purple',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="46" fill="#1e293b" stroke="#8b5cf6" stroke-width="4"/><path d="M25,80 C25,65 35,55 50,55 C65,55 75,65 75,80" fill="none" stroke="#8b5cf6" stroke-width="4"/><circle cx="42" cy="46" r="4" fill="#a78bfa"/><circle cx="58" cy="46" r="4" fill="#a78bfa"/><path d="M30,30 Q50,15 70,30 Q75,45 70,55 Q50,65 30,55 Q25,45 30,30" fill="none" stroke="#8b5cf6" stroke-width="3"/><path d="M45,51 Q50,54 55,51" fill="none" stroke="#a78bfa" stroke-width="2"/><path d="M32,38 Q50,45 68,38" fill="none" stroke="#c084fc" stroke-width="2"/></svg>`
+            },
+            kenji: {
+                name: 'Kenji (Ethical Hacker)',
+                color: 'teal',
+                svg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="46" fill="#1e293b" stroke="#14b8a6" stroke-width="4"/><path d="M25,80 C25,65 35,55 50,55 C65,55 75,65 75,80" fill="none" stroke="#14b8a6" stroke-width="4"/><rect x="35" y="42" width="12" height="6" rx="2" fill="none" stroke="#2dd4bf" stroke-width="2"/><rect x="53" y="42" width="12" height="6" rx="2" fill="none" stroke="#2dd4bf" stroke-width="2"/><line x1="47" y1="45" x2="53" y2="45" stroke="#2dd4bf" stroke-width="2"/><path d="M30,25 L70,25 L75,38 L65,35 L50,40 L35,35 L25,38 Z" fill="none" stroke="#0d9488" stroke-width="3"/><path d="M47,52 Q50,50 53,52" fill="none" stroke="#2dd4bf" stroke-width="2"/></svg>`
+            }
+        };
+
+        // All 25 scenarios, organized in 5 Levels (5 per level)
+        const GAME_LEVELS = [
+            {
+                title: "Level 1: MLD Stewardship & NxGBL Basics",
+                difficulty: "Easy",
+                color: "emerald",
+                bgGradient: "from-slate-900 to-emerald-950/40",
+                scenarios: [
+                    {
+                        situation: "You are working on an asynchronous task in the BRafeNHS school library. A new video game just released, and you are tempted to open it on your MLD because there are no active proctors looking.",
+                        options: [
+                            { text: "Open the game. You'll finish your schoolwork at night when you get home since you can learn anywhere, anytime anyway.", score: 0 },
+                            { text: "Keep your focus on the task. Your MLD is a tool for the Next Generation Blended Learning program designed to make you an active learner, not a distraction device.", score: 100 },
+                            { text: "Minimize the task and load the game in a small, hidden window so you can quickly switch back if a teacher approaches.", score: 20 }
+                        ],
+                        correct: 1,
+                        hint: "Review the primary purpose of your school-issued MLD according to your NxGBL Pledge. Is it for recreational distraction or active learning stewardship?",
+                        explanation: "Active Learning means showing accountability for your device. As a Lasallian digital leader, your MLD's convenience is used to boost anytime/anywhere productivity, not fuel hidden distractions."
+                    },
+                    {
+                        situation: "You arrived at school with 15% battery on your MLD because you stayed up late scrolling social media. Your next class requires your device to access a key interactive Canvas quiz.",
+                        options: [
+                            { text: "Rely on your classmate to share their device, or unplug a classroom dashboard TV to charge yours.", score: 20 },
+                            { text: "Blame your home internet/charger, ask the teacher for a paper assessment, and sit out of the blended lesson activities.", score: 10 },
+                            { text: "Own your responsibility. Use a portable power bank if available, charge during designated break times safely, and pledge to fully charge your device overnight.", score: 100 }
+                        ],
+                        correct: 2,
+                        hint: "Part of the MLD Pledge is physical readiness and showing accountability for maintaining your device's working status.",
+                        explanation: "Digital discipline starts before you even enter the campus. Coming prepared ensures you don't disrupt collaborative lessons or take away resources from others."
+                    },
+                    {
+                        situation: "A sudden storm knocks out the local internet connection while you are working in your collaborative study group at school. You need to read the assigned module.",
+                        options: [
+                            { text: "Close your MLD immediately, pack your bags, and claim that learning is impossible without active Wi-Fi.", score: 10 },
+                            { text: "Explain that with NxGBL, you proactively downloaded major course materials offline, and proceed to study the synced local files on your MLD.", score: 100 },
+                            { text: "Use your personal mobile hotspot to stream entertainment videos to pass the time while the school's power recovers.", score: 20 }
+                        ],
+                        correct: 1,
+                        hint: "The beauty of NxGBL is 'anytime, anywhere' learning. How can offline features assist you when connectivity drops?",
+                        explanation: "True active learners configure their MLDs with offline-capable study materials. This guarantees that your learning remains active and continuous even without live networks."
+                    },
+                    {
+                        situation: "A classmate forgot their MLD. They ask you to borrow your device for a quick minute while you are logged in, so they can turn in a late assignment on Canvas.",
+                        options: [
+                            { text: "Let them use it instantly while you step away. Trust is a key virtue, and you want to help a friend in need.", score: 10 },
+                            { text: "Refuse rudely and report them to the discipline office for forgetting their device.", score: 30 },
+                            { text: "Politely decline to share a logged-in account, but offer to accompany them to the school's digital desk or advise them to ask the teacher for an emergency loaner.", score: 100 }
+                        ],
+                        correct: 2,
+                        hint: "Think about security, personal ownership, and the potential hazard of someone else submitting work using your digital identity.",
+                        explanation: "Your personal logged-in account holds your digital identity. Protecting your credentials and device access is a crucial step in preventing identity theft or academic mix-ups."
+                    },
+                    {
+                        situation: "While studying on your desk, you accidentally knock over a glass of water. A few drops splash onto the keyboard of your MLD. The device appears to still be working fine.",
+                        options: [
+                            { text: "Immediately turn off the device, wipe it dry, and notify your parents or the school's IT support to check for hidden moisture damage.", score: 100 },
+                            { text: "Ignore it and keep using it. If it doesn't shut down right away, there is absolutely nothing to worry about.", score: 0 },
+                            { text: "Shake the device violently to get the water out and blow dry it on hot heat without telling anyone.", score: 30 }
+                        ],
+                        correct: 0,
+                        hint: "Stewardship means preserving the physical integrity of school assets and being honest about accidents before they cause permanent hardware failure.",
+                        explanation: "Honesty and prompt action prevent severe system decay. Taking correct physical care of your MLD honors the digital stewardship agreement you signed."
+                    }
+                ]
+            },
+            {
+                title: "Level 2: Digital Footprint & Classroom Dynamics",
+                difficulty: "Medium",
+                color: "teal",
+                bgGradient: "from-slate-900 to-teal-950/40",
+                scenarios: [
+                    {
+                        situation: "During an online video session, your teacher makes a funny, harmless slip of the tongue. A classmate takes a quick screen recording and asks you to edit it with funny audio and post it to TikTok.",
+                        options: [
+                            { text: "Do it! It's just a light joke, and it might get your class TikTok account viral.", score: 20 },
+                            { text: "Refuse and explain that recording and posting school staff without consent violates their privacy and the school's acceptable MLD use policy.", score: 100 },
+                            { text: "Just watch it, laugh, and send it to your close friends in a private personal group chat instead of public social media.", score: 30 }
+                        ],
+                        correct: 1,
+                        hint: "Protecting dignity, privacy, and truth applies to all members of our community, including our teachers and peers.",
+                        explanation: "Every piece of media you create and share forms part of your digital footprint and reflects your integrity. Respecting the privacy of teachers and students is non-negotiable."
+                    },
+                    {
+                        situation: "You notice a massive thread of mean memes and jokes in a student-created Viber GC mocking a classmate who got a low grade in the science presentation.",
+                        options: [
+                            { text: "Leave the group chat quietly without saying anything so that you can keep yourself out of trouble.", score: 40 },
+                            { text: "Intervene politely by stating that the chat is meant for positive collaboration, then message the targeted student privately to offer supportive words.", score: 100 },
+                            { text: "Join in on the memes because if you don't, you might become the next target of group isolation.", score: 0 }
+                        ],
+                        correct: 1,
+                        hint: "Remember the iTHINK virtue of Inclusiveness and Kindness. How can you be an active digital upstander instead of a passive bystander?",
+                        explanation: "Lasallian digital leaders practice active support. Intervening politely preserves the human dignity of your peers and shows true bravery in leadership."
+                    },
+                    {
+                        situation: "You have a massive assignment due on Canvas at midnight, but your peer group chats are buzzing with messages and gaming invitations. Your MLD is pinging constantly.",
+                        options: [
+                            { text: "Keep checking every notification to balance both. You can multitask writing your essay and chatting at the same time.", score: 20 },
+                            { text: "Turn off notifications or activate 'Do Not Disturb' Focus Mode on your MLD, and prioritize complete focus on your academic submission.", score: 100 },
+                            { text: "Log off from Canvas and play games with them, hoping the teacher will accept an excuse about slow internet tomorrow morning.", score: 10 }
+                        ],
+                        correct: 1,
+                        hint: "Stewardship of digital time is a critical skill for an active learner. How can technology features help you control distractions?",
+                        explanation: "Multitasking decreases the quality of your learning. Utilizing built-in MLD focus modes helps you cultivate healthy boundaries and achieve better academic results."
+                    },
+                    {
+                        situation: "A classmate sends you a direct message containing a photo of tomorrow's quarter exam answers, leaked from another section. No teachers know about this leak yet.",
+                        options: [
+                            { text: "Delete the picture, ignore it, and proceed with studying your notes as usual so you don't get involved in school drama.", score: 50 },
+                            { text: "Study the leaked answers to assure an outstanding grade for your GPA, and forward it only to your very closest friends.", score: 0 },
+                            { text: "Refuse to use it, advise the sender of the ethical dangers, and report the leak immediately to your adviser or subject teacher.", score: 100 }
+                        ],
+                        correct: 2,
+                        hint: "Apply the absolute value of Integrity. If convenience violates digital fairness and school policies, what choice must you take?",
+                        explanation: "Honesty represents your personal character. Reporting leaks protects the academic fairness of the entire class, proving that your integrity cannot be compromised."
+                    },
+                    {
+                        situation: "During an interactive collaborative board activity (like Padlet), you notice a new student is struggling to format their digital card and is getting left out of the group threads.",
+                        options: [
+                            { text: "Double-down on your own high-scoring post and ignore them. It is individual work after all.", score: 20 },
+                            { text: "Post a friendly comment on their board offering a simple formatting guide and inviting them to share their brilliant ideas with the group.", score: 100 },
+                            { text: "Make a joke about their design skills in the comments to point out their errors so they can improve next time.", score: 10 }
+                        ],
+                        correct: 1,
+                        hint: "This directly relates to the iTHINK virtue of Inclusiveness and Kindness. How can you make others feel valued in a digital collaborative space?",
+                        explanation: "Inclusiveness ensures that our digital classroom remains safe and welcoming for everyone. Digital leaders lift others up, fostering positive, collaborative environments."
+                    }
+                ]
+            },
+            {
+                title: "Level 3: Collaboration & Group Chats",
+                difficulty: "Advanced Medium",
+                color: "purple",
+                bgGradient: "from-slate-900 to-purple-950/40",
+                scenarios: [
+                    {
+                        situation: "You are the creator and administrator of your class group chat. A student from another school who joined your study group starts posting highly inappropriate links and content.",
+                        options: [
+                            { text: "Immediately delete the inappropriate content, remove the user, and re-establish the group standards to prevent future incidents.", score: 100 },
+                            { text: "Do nothing since it is a free online platform and you don't want to seem too strict to your class group.", score: 10 },
+                            { text: "Laugh at the posts but warn the user that they should only share those kinds of links after school hours.", score: 20 }
+                        ],
+                        correct: 0,
+                        hint: "As a digital space owner, you hold responsibilities for maintaining safety and decency. Leaving spam or inappropriate materials online harms others.",
+                        explanation: "Admin privileges come with leadership duties. Protecting peers from harmful content is part of maintaining a healthy, respectful, and safe digital learning environment."
+                    },
+                    {
+                        situation: "Your group is submitting a shared slide deck for Social Studies. Right before submission, you notice a group mate copy-pasted whole paragraphs directly from Wikipedia without citations.",
+                        options: [
+                            { text: "Let it go, as editing it might cause friction within the team, and they are responsible for their own slides anyway.", score: 30 },
+                            { text: "Quickly paraphrase the content or add the correct source citations, and discuss the importance of academic honesty with your team member.", score: 100 },
+                            { text: "Delete their slide entirely without warning them, leaving them with zero contribution points.", score: 40 }
+                        ],
+                        correct: 1,
+                        hint: "This situation touches upon both Trustworthiness (producing honest academic outputs) and Humility/Kindness (correcting group mates gently).",
+                        explanation: "Shared files mean shared responsibility. Correcting plagiarism protects the academic validity of the whole team while helping your peer learn how to cite properly."
+                    },
+                    {
+                        situation: "Under a public post celebrating your school's debate victory, a student from a rival school posts toxic comments calling your school's achievement 'pure luck and rigged.'",
+                        options: [
+                            { text: "Reply with sharp insults about their school, pointing out their past failures to silence them.", score: 0 },
+                            { text: "Ignore the troll, celebrate your team's success with respectful comments, and block/report the abusive user if they violate platform rules.", score: 100 },
+                            { text: "Tag all your schoolmates in a massive digital raid to flood the user's personal page with negative reactions.", score: 10 }
+                        ],
+                        correct: 1,
+                        hint: "Nobility and Kindness guide us when facing digital conflicts. Retaliating with anger never serves our community's character.",
+                        explanation: "A Lasallian digital leader refuses to feed toxic online behavior. Dignity and self-control are demonstrated by remaining polite and refusing to sink to negativity."
+                    },
+                    {
+                        situation: "Your partner for a dual-project has been completely unresponsive on Messenger all week. On submission day, they send you a message asking you to put their name on the work because they were busy.",
+                        options: [
+                            { text: "Refuse, put only your name, and write a detailed angry post about their laziness on your public social media profile.", score: 30 },
+                            { text: "Submit your work with only your name, but privately explain to them that you have to be honest with the teacher, and advise them to contact the teacher directly.", score: 100 },
+                            { text: "Cover for them and include their name. You want to avoid any conflict or drama within your circle of friends.", score: 20 }
+                        ],
+                        correct: 1,
+                        hint: "Integrity means being honest in reporting contributions, but Nobility and Kindness mean doing so without starting a public flame war.",
+                        explanation: "Authentic evaluation requires honest reporting of work. Encouraging your partner to own their situation teaches accountability and protects your own academic integrity."
+                    },
+                    {
+                        situation: "A helpful-looking stranger on a public Discord server dedicated to high school homework help offers to write your entire research draft if you share your full school ID details and active phone number.",
+                        options: [
+                            { text: "Accept the deal because it saves you a week of heavy research work and they seem like a kind, supportive expert.", score: 0 },
+                            { text: "Decline immediately and block them. Safeguard your personal identifiers, recognizing that sharing such data puts your offline security at risk.", score: 100 },
+                            { text: "Give them a fake name but send them your real phone number and school email so they can still deliver the draft.", score: 20 }
+                        ],
+                        correct: 1,
+                        hint: "Never compromise privacy and digital safety for academic convenience. Protecting personal information is a core pillar of digital citizenship.",
+                        explanation: "Personal data is incredibly valuable. Malicious users often trade school credentials for identity theft or phishing schemes. Keep your digital identity private."
+                    }
+                ]
+            },
+            {
+                title: "Level 4: Navigating the AI Frontier - Core Rules",
+                difficulty: "Hard",
+                color: "purple",
+                bgGradient: "from-slate-900 to-indigo-950/40",
+                scenarios: [
+                    {
+                        situation: "For your English essay, your teacher explicitly stated: 'NO generative AI tools allowed.' You want to generate a structural outline using ChatGPT and write your own body paragraphs based on it.",
+                        options: [
+                            { text: "Since you are still writing the words, using AI for just the outline does not count as a violation.", score: 20 },
+                            { text: "Abide strictly by the teacher's rule. Do not use AI in any form for this formative assessment, relying fully on your own structured thoughts.", score: 100 },
+                            { text: "Use ChatGPT, write the essay, and write a small hidden footnote saying 'Assisted by AI' in a micro-sized font to bypass the rule.", score: 10 }
+                        ],
+                        correct: 1,
+                        hint: "When a teacher sets a specific constraint for assessment, true integrity means matching those rules entirely without finding tricky loopholes.",
+                        explanation: "If a teacher bans AI, it is because they need to evaluate your raw cognitive abilities. Honoring this request directly builds your personal critical thinking skills."
+                    },
+                    {
+                        situation: "Your computer teacher permits using AI to fix syntax errors in your code, provided you use the official AI Declaration Framework. You don't know how to fill out the Declaration properly.",
+                        options: [
+                            { text: "Submit a lazy declaration: 'Used AI for coding assistance.' and leave it at that.", score: 30 },
+                            { text: "Skip the declaration completely since fixing simple syntax errors does not count as plagiarism.", score: 10 },
+                            { text: "Clearly declare: Tool (e.g., Gemini 2.5), Purpose (identifying missing semicolons), Process (pasted my broken loop code and asked for syntax check), and Ownership (verified and ran the code myself).", score: 100 }
+                        ],
+                        correct: 2,
+                        hint: "The official AI Declaration Framework requires 4 vital steps: declaring the Tool, Purpose, Process, and Ownership. Think of what constitutes transparency.",
+                        explanation: "Transparency is the bedrock of using AI ethically. Declaring Tool, Purpose, Process, and Ownership demonstrates you are a responsible designer, not a lazy copier."
+                    },
+                    {
+                        situation: "While writing a history presentation, you ask an AI model for historical citations. It gives you three perfect-looking sources, but when you search for them online, they don't seem to exist.",
+                        options: [
+                            { text: "Include them anyway. The AI is highly advanced and these sources are probably archived in offline collections.", score: 15 },
+                            { text: "Recognize this as an AI hallucination. Locate real, verified academic sources, and replace the fake citations with true research evidence.", score: 100 },
+                            { text: "Slightly change the dates and titles of the fake citations so that if the teacher searches, they think the link is temporarily broken.", score: 0 }
+                        ],
+                        correct: 1,
+                        hint: "AI models generate language patterns, which sometimes results in highly convincing but completely fictional references (hallucinations).",
+                        explanation: "Critical evaluation is your superpower. As a Lasallian digital leader, you must verify all information generated by AI before utilizing it in any academic submission."
+                    },
+                    {
+                        situation: "You want to improve your essay writing. What is a helpful and approved way to use generative AI as an active learner without crossing into academic dishonesty?",
+                        options: [
+                            { text: "Feed your drafted paragraphs to the AI and ask it to provide structural feedback and explain its grammar recommendations.", score: 100 },
+                            { text: "Ask the AI to write the essay draft from scratch, then slightly alter the adjectives so it matches your regular writing style.", score: 20 },
+                            { text: "Ask the AI to generate multiple options, select the best one, and submit it directly as your own work.", score: 10 }
+                        ],
+                        correct: 0,
+                        hint: "Helpful AI use supports your cognitive growth, while harmful use replaces your actual thinking. Which option leads to active personal skill-building?",
+                        explanation: "Using AI to analyze your work and offer structural feedback helps you learn to write better over time. You remain the active driver of your education."
+                    },
+                    {
+                        situation: "The school launches a digital artwork contest themed 'Lasallian Values in the Digital Age'. You generate a breathtaking image on Midjourney and spend hours manually adding text layers in Photoshop.",
+                        options: [
+                            { text: "Submit it as '100% hand-drawn digital design' because your prompt design and edits represent the primary creative energy.", score: 15 },
+                            { text: "Submit it, but declare the AI generation tool honestly, letting the judges decide if it meets the contest guidelines for original artwork.", score: 100 },
+                            { text: "Use AI to write a defense statement explaining why you didn't use AI, and hope the judges don't run an AI detection test.", score: 0 }
+                        ],
+                        correct: 1,
+                        hint: "Think about Trustworthiness and Humility. Being completely transparent about your creative process is more honorable than winning under false pretenses.",
+                        explanation: "Creative integrity means never claiming AI-generated elements as fully human-made artwork. Transparency builds deep community respect and honors true artistic value."
+                    }
+                ]
+            },
+            {
+                title: "Level 5: The Lasallian Digital Leader",
+                difficulty: "Expert",
+                color: "purple",
+                bgGradient: "from-slate-900 to-purple-950/50",
+                scenarios: [
+                    {
+                        situation: "A highly convincing audio deepfake of your Student Council President admitting to cheating on an exam is shared in a massive student group chat right before the school elections.",
+                        options: [
+                            { text: "Share it instantly to all your friends to make sure they are aware of the potential scandal before voting.", score: 10 },
+                            { text: "Do not share it. Counsel others in the chat about the risks of AI-generated audio manipulation, and wait for official student board confirmations.", score: 100 },
+                            { text: "Ignore it completely and stay silent, letting the student body believe whatever they want.", score: 50 }
+                        ],
+                        correct: 1,
+                        hint: "Digital leaders protect truth and stability. Spreading unverified media—especially advanced AI manipulations—can devastate lives and destroy trust.",
+                        explanation: "Critical consumption is essential in the age of generative media. Pausing, verifying, and warning others about deepfakes safeguards truth within your school community."
+                    },
+                    {
+                        situation: "You generate an image of 'successful corporate leaders' using a popular AI tool for your business presentation, but notice all the generated images depict only one gender and race.",
+                        options: [
+                            { text: "Use the images anyway without comment. It is just a quick school presentation and the visuals look premium.", score: 30 },
+                            { text: "Point out the inherent bias of AI training models during your presentation, and manually source real, diverse imagery to represent true leadership.", score: 100 },
+                            { text: "Complain to the AI developers on social media, but keep using the biased images in your project slides to save time.", score: 50 }
+                        ],
+                        correct: 1,
+                        hint: "This scenario exercises the iTHINK virtue of Inclusiveness and Critical Thinking. How do we respond to the biases built into digital systems?",
+                        explanation: "AI models often reflect the historical bias of their training data. Digital leaders recognize these flaws and work to promote inclusiveness and accurate representations."
+                    },
+                    {
+                        situation: "You are designing an online advocacy website for your school's charity drive. You need background music and some high-quality digital assets.",
+                        options: [
+                            { text: "Search Google, download the first copyrighted assets you find, and assume non-profit school use exempts you from all legal rules.", score: 25 },
+                            { text: "Use open-source, Creative Commons licensed assets or generate your own materials, and attribute the authors clearly in your site footer.", score: 100 },
+                            { text: "Use copyrighted music but write 'No Copyright Infringement Intended' in your description to bypass intellectual property laws.", score: 15 }
+                        ],
+                        correct: 1,
+                        hint: "Respecting the creative property of others is a direct reflection of Nobility and Integrity. It shows you value other creators' hard work.",
+                        explanation: "Creative Commons and open-source materials offer incredible resources. Respecting copyright laws proves that your advocacy is ethical from its roots."
+                    },
+                    {
+                        situation: "To prepare for a complex philosophy class debate, you realize you haven't read the assigned chapters. You want to ask AI to summarize them into three bullet points so you don't have to read.",
+                        options: [
+                            { text: "Rely solely on the AI summaries. It's much faster, and you can repeat the summaries word-for-word to sound highly intellectual.", score: 20 },
+                            { text: "Read the chapters yourself first, then use AI to clarify difficult concepts and generate mock debate arguments to test your own understanding.", score: 100 },
+                            { text: "Ask a teammate to read the text and write a summary for you instead, so you don't have to use technology or work.", score: 10 }
+                        ],
+                        correct: 1,
+                        hint: "Using AI to bypass reading leads to long-term cognitive dependency. How can you use AI to extend your intellect rather than replace it?",
+                        explanation: "Active learning is about exercising your brain. Using AI as a dialogue partner to deepen your reading builds robust critical thinking and deep subject mastery."
+                    },
+                    {
+                        situation: "As a Lasallian Digital Leader, what is the ultimate commitment you make every single time you open your MLD, access a group chat, or prepare to click?",
+                        options: [
+                            { text: "To use my device as a force for positive community impact, critical digital stewardship, and moral integrity under the guidance of the iTHINK virtues.", score: 100 },
+                            { text: "To maximize my digital efficiency, always prioritize speed over manual effort, and use all available shortcuts to secure high grades.", score: 10 },
+                            { text: "To avoid any digital interactions entirely and only participate in traditional paper-based learning methods.", score: 20 }
+                        ],
+                        correct: 0,
+                        hint: "The final pledge is about alignment of values, balance, responsibility, and stepping forward as an ethical light in the digital space.",
+                        explanation: "Your MLD is a tool of empowerment. Coupling technology with the timeless virtues of Integrity, Trustworthiness, Humility, Inclusiveness, Nobility, and Kindness defines a true Lasallian Digital Leader!"
+                    }
+                ]
+            }
+        ];
+
+        // Core Game State Variables
+        let userState = {
+            playerName: "Lasallian Student",
+            avatar: "riku",
+            score: 0,
+            currentLevelIndex: 0,
+            currentScenarioIndex: 0,
+            attempts: 0,
+            gameCompleted: false,
+            unlockedLevelIndex: 0
+        };
+
+        // DOM elements
+        const hudScore = document.getElementById('hudScore');
+        const hudLevelBadge = document.getElementById('hudLevelBadge');
+        const gameContent = document.getElementById('gameContent');
+
+        // Initialization
+        window.onload = function() {
+            // Render the start/onboarding screen first
+            renderOnboarding();
+        };
+
+        function updateHUD() {
+            hudScore.textContent = userState.score;
+            if (userState.gameCompleted) {
+                hudLevelBadge.textContent = "🏆 COMPLETE";
+                hudLevelBadge.classList.remove('hidden');
+            } else {
+                hudLevelBadge.textContent = `Lvl ${userState.currentLevelIndex + 1}/5`;
+                hudLevelBadge.classList.remove('hidden');
+            }
+        }
+
+        function renderOnboarding() {
+            gameContent.innerHTML = `
+                <div class="max-w-3xl mx-auto py-6 flex flex-col items-center justify-center text-center space-y-6">
+                    <div class="space-y-2">
+                        <div class="inline-block bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest text-glow">
+                            Green, White, Teal & Purple Cyber Edition
+                        </div>
+                        <h2 class="text-3xl md:text-5xl font-extrabold heading-font tracking-tight text-white">
+                            iTHINK Before I Click
+                        </h2>
+                        <p class="text-slate-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed mt-2">
+                            Welcome, Student! Step into the Next Generation Blended Learning (NxGBL) simulator. Master your Mobile Learning Device (MLD), lead honorably in group chats, and navigate the frontiers of artificial intelligence with authentic Lasallian digital citizenship.
+                        </p>
+                    </div>
+
+                    <!-- Input Name and Character Select -->
+                    <div class="w-full glass-panel p-6 rounded-2xl border border-teal-500/30 space-y-5 text-left max-w-xl">
+                        <div>
+                            <label class="block text-xs font-bold text-teal-400 tracking-wider uppercase mb-2">1. Enter Your Name</label>
+                            <input id="studentNameInput" type="text" placeholder="e.g. Maria de la Cruz" value="${userState.playerName}" 
+                                   class="w-full bg-slate-900 border border-slate-700 focus:border-emerald-400 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition duration-200 text-sm font-semibold">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-teal-400 tracking-wider uppercase mb-2">2. Choose Your Digital Leader Avatar</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div onclick="selectAvatar('riku')" id="avatarCard-riku" class="cursor-pointer bg-slate-950/60 p-3 rounded-xl border-2 border-emerald-500 flex flex-col items-center gap-2 hover:border-emerald-400 transition-all duration-200">
+                                    <div class="w-16 h-16">${AVATARS.riku.svg}</div>
+                                    <span class="text-xs font-bold text-emerald-400">Riku</span>
+                                    <span class="text-[9px] text-slate-400 text-center leading-tight">Optimistic Techie</span>
+                                </div>
+                                <div onclick="selectAvatar('maya')" id="avatarCard-maya" class="cursor-pointer bg-slate-950/60 p-3 rounded-xl border-2 border-slate-800 flex flex-col items-center gap-2 hover:border-purple-500 transition-all duration-200">
+                                    <div class="w-16 h-16">${AVATARS.maya.svg}</div>
+                                    <span class="text-xs font-bold text-purple-400">Maya</span>
+                                    <span class="text-[9px] text-slate-400 text-center leading-tight">Creative Artist</span>
+                                </div>
+                                <div onclick="selectAvatar('kenji')" id="avatarCard-kenji" class="cursor-pointer bg-slate-950/60 p-3 rounded-xl border-2 border-slate-800 flex flex-col items-center gap-2 hover:border-teal-500 transition-all duration-200">
+                                    <div class="w-16 h-16">${AVATARS.kenji.svg}</div>
+                                    <span class="text-xs font-bold text-teal-400">Kenji</span>
+                                    <span class="text-[9px] text-slate-400 text-center leading-tight">Ethical Hacker</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Launch Simulation Trigger -->
+                    <div>
+                        <button onclick="startGame()" class="px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-purple-600 hover:from-emerald-400 hover:to-purple-500 text-white font-extrabold heading-font text-lg rounded-xl shadow-lg hover:shadow-emerald-500/20 active:scale-95 transition-all duration-200 transform">
+                            LAUNCH SIMULATION 🚀
+                        </button>
+                        <p class="text-[10px] text-slate-500 mt-2">Provides 5 levels • 25 real-world scenarios • Instant values-driven feedback</p>
+                    </div>
+                </div>
+            `;
+            updateHUD();
+        }
+
+        function selectAvatar(avatarId) {
+            playSfx('click');
+            userState.avatar = avatarId;
+            // Update active cards
+            ['riku', 'maya', 'kenji'].forEach(id => {
+                const card = document.getElementById(`avatarCard-${id}`);
+                if (id === avatarId) {
+                    card.classList.add('border-emerald-500', 'bg-emerald-950/20');
+                    card.classList.remove('border-slate-800');
+                } else {
+                    card.classList.remove('border-emerald-500', 'bg-emerald-950/20');
+                    card.classList.add('border-slate-800');
+                }
+            });
+        }
+
+        function startGame() {
+            const nameInput = document.getElementById('studentNameInput');
+            if (nameInput && nameInput.value.trim() !== "") {
+                userState.playerName = nameInput.value.trim();
+            }
+            playSfx('click');
+            renderLevelSelect();
+        }
+
+        function renderLevelSelect() {
+            updateHUD();
+            
+            let levelsGridHtml = "";
+            GAME_LEVELS.forEach((lvl, index) => {
+                const isUnlocked = index <= userState.unlockedLevelIndex;
+                const statusBadge = isUnlocked ? `<span class="text-emerald-400 font-bold text-xs">UNLOCKED</span>` : `<span class="text-slate-500 font-bold text-xs">LOCKED</span>`;
+                const cardBorder = isUnlocked ? 'border-teal-500/40 hover:border-emerald-400 cursor-pointer' : 'border-slate-800 opacity-60 cursor-not-allowed';
+                const cardBg = isUnlocked ? 'bg-slate-950/80 hover:bg-slate-900/80' : 'bg-slate-950/40';
+
+                levelsGridHtml += `
+                    <div onclick="${isUnlocked ? `selectLevel(${index})` : ''}" class="glass-panel p-4 rounded-xl border ${cardBorder} ${cardBg} transition duration-200 flex flex-col justify-between">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-bold text-purple-400 uppercase tracking-widest">Level ${index+1}/5</span>
+                                ${statusBadge}
+                            </div>
+                            <h3 class="text-base font-bold text-slate-100 heading-font">${lvl.title}</h3>
+                            <p class="text-xs text-slate-400 leading-tight">5 challenging scenarios exploring digital citizenship & ethics.</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-800/60 flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase">Difficulty: ${lvl.difficulty}</span>
+                            ${isUnlocked ? `<span class="text-[10px] bg-emerald-950 text-emerald-300 font-semibold px-2 py-0.5 rounded">Enter ➔</span>` : `<span class="text-[10px] text-slate-600">Locked 🔒</span>`}
+                        </div>
+                    </div>
+                `;
+            });
+
+            gameContent.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800 pb-4 gap-2">
+                        <div>
+                            <span class="text-xs font-bold text-emerald-400 tracking-wider uppercase">NxGBL Level Map</span>
+                            <h2 class="text-2xl md:text-3xl font-extrabold heading-font text-white">Select a Learning Realm</h2>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full border border-teal-500/50">${AVATARS[userState.avatar].svg}</div>
+                            <div class="text-left">
+                                <p class="text-xs font-bold text-white leading-none">${userState.playerName}</p>
+                                <p class="text-[9px] text-slate-400 uppercase">Active Lasallian Leader</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${levelsGridHtml}
+                    </div>
+
+                    <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl text-xs text-slate-400 max-w-2xl">
+                        💡 <strong>Learning Mission:</strong> Advance through each level by answering real-world dilemmas correctly. You have <strong>two attempts per scenario</strong>. Correct answers on your first try award full points; second attempts give partial points. Think before you click!
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectLevel(lvlIndex) {
+            playSfx('click');
+            userState.currentLevelIndex = lvlIndex;
+            userState.currentScenarioIndex = 0;
+            userState.attempts = 0;
+            renderScenario();
+        }
+
+        function renderScenario() {
+            updateHUD();
+            const level = GAME_LEVELS[userState.currentLevelIndex];
+            const scenario = level.scenarios[userState.currentScenarioIndex];
+
+            // Progress Indicators
+            let dotProgressHtml = "";
+            for (let i = 0; i < 5; i++) {
+                if (i < userState.currentScenarioIndex) {
+                    dotProgressHtml += `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm"></span>`;
+                } else if (i === userState.currentScenarioIndex) {
+                    dotProgressHtml += `<span class="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping"></span>`;
+                } else {
+                    dotProgressHtml += `<span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>`;
+                }
+            }
+
+            // Options rendering
+            let optionsHtml = "";
+            scenario.options.forEach((opt, idx) => {
+                optionsHtml += `
+                    <button onclick="submitAnswer(${idx})" 
+                            class="w-full text-left bg-slate-900 hover:bg-slate-800/80 border border-slate-700 hover:border-teal-500/50 p-4 rounded-xl text-xs md:text-sm text-slate-200 transition duration-150 active:scale-[0.99] flex items-start gap-3">
+                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center font-bold text-xs text-teal-400">${String.fromCharCode(65 + idx)}</span>
+                        <span>${opt.text}</span>
+                    </button>
+                `;
+            });
+
+            gameContent.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch flex-grow">
+                    <!-- Situation and Context (Left Area) -->
+                    <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-gradient-to-r from-emerald-950 to-teal-950 border border-teal-500/30 text-teal-300 font-semibold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full">
+                                    ${level.title}
+                                </span>
+                                <div class="flex items-center gap-1.5 bg-slate-900 px-2.5 py-1 rounded-full border border-slate-800">
+                                    <span class="text-[10px] text-slate-400 uppercase font-bold">Progress:</span>
+                                    <div class="flex items-center gap-1">
+                                        ${dotProgressHtml}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="glass-panel p-5 rounded-2xl border border-slate-800 relative overflow-hidden flex-grow flex flex-col justify-center min-h-[160px]">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Digital Situation ${userState.currentScenarioIndex + 1} of 5</span>
+                                <p class="text-sm md:text-base text-slate-100 font-medium leading-relaxed mt-2">
+                                    "${scenario.situation}"
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Mini Anime Visual Companion -->
+                        <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-2xl flex items-center gap-4">
+                            <div class="w-14 h-14 bg-slate-900 rounded-xl border border-teal-500/30 p-1 flex-shrink-0">
+                                ${AVATARS[userState.avatar].svg}
+                            </div>
+                            <div class="text-left">
+                                <p class="text-[11px] font-extrabold text-teal-400 uppercase tracking-wider">${AVATARS[userState.avatar].name}</p>
+                                <p class="text-xs text-slate-300 italic leading-snug">"Analyze the dilemma. Which choice maintains your pledge and keeps you honest, safe, and collaborative?"</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Options & Navigation (Right Area) -->
+                    <div class="lg:col-span-5 flex flex-col justify-between space-y-3">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center px-1">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Select the best action:</span>
+                                <span id="attemptIndicator" class="text-[10px] bg-purple-950 text-purple-300 font-bold px-2 py-0.5 rounded border border-purple-500/30 uppercase">
+                                    Attempt ${userState.attempts + 1} of 2
+                                </span>
+                            </div>
+                            <div class="space-y-3" id="optionsBox">
+                                ${optionsHtml}
+                            </div>
+                        </div>
+
+                        <!-- Back Button -->
+                        <div class="pt-2 border-t border-slate-800/60 flex justify-between items-center">
+                            <button onclick="renderLevelSelect()" class="text-slate-400 hover:text-white text-xs font-semibold flex items-center gap-1 transition">
+                                ⇠ Back to Level Map
+                            </button>
+                            <span class="text-[10px] text-slate-500">NxGBL Digital Citizenship Code</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function submitAnswer(selectedOptionIndex) {
+            const level = GAME_LEVELS[userState.currentLevelIndex];
+            const scenario = level.scenarios[userState.currentScenarioIndex];
+            const isCorrect = (selectedOptionIndex === scenario.correct);
+
+            if (isCorrect) {
+                // Correct path
+                playSfx('correct');
+                let ptsAwarded = userState.attempts === 0 ? 100 : 50;
+                userState.score += ptsAwarded;
+                renderFeedback(true, ptsAwarded, scenario.explanation);
+            } else {
+                // Incorrect path
+                playSfx('wrong');
+                userState.attempts++;
+                if (userState.attempts < 2) {
+                    // Give a hint and ask to try again
+                    renderFeedback(false, 0, scenario.hint, true);
+                } else {
+                    // Out of attempts, show final explanation
+                    renderFeedback(false, 0, scenario.explanation, false, scenario.options[scenario.correct].text);
+                }
+            }
+        }
+
+        function renderFeedback(isCorrect, ptsAwarded, feedbackText, allowRetry = false, correctAnswerText = "") {
+            updateHUD();
+            
+            let feedbackTitle = "";
+            let titleColor = "";
+            let gradientAccent = "";
+            
+            if (isCorrect) {
+                feedbackTitle = "✨ DIGITAL CITIZENSHIP VICTORY!";
+                titleColor = "text-emerald-400";
+                gradientAccent = "from-emerald-950/40 via-slate-900 to-slate-950";
+            } else {
+                feedbackTitle = allowRetry ? "⚠️ ETHICAL DILEMMA HINT" : "❌ OUT OF ATTEMPTS";
+                titleColor = allowRetry ? "text-yellow-400" : "text-red-400";
+                gradientAccent = allowRetry ? "from-yellow-950/30 via-slate-900 to-slate-950" : "from-red-950/30 via-slate-900 to-slate-950";
+            }
+
+            let nextActionBtnHtml = "";
+            if (allowRetry) {
+                nextActionBtnHtml = `
+                    <button onclick="renderScenario()" class="px-6 py-2.5 bg-yellow-600 hover:bg-yellow-500 text-slate-950 font-extrabold rounded-lg text-xs tracking-wider uppercase transition">
+                        Try Again (Last Attempt) ↺
+                    </button>
+                `;
+            } else {
+                const isLastScenario = (userState.currentScenarioIndex === 4);
+                const buttonText = isLastScenario ? "Finish Level 🏁" : "Next Situation ➔";
+                const actionCall = isLastScenario ? "completeLevel()" : "nextScenario()";
+                nextActionBtnHtml = `
+                    <button onclick="${actionCall}" class="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold rounded-lg text-xs tracking-wider uppercase transition">
+                        ${buttonText}
+                    </button>
+                `;
+            }
+
+            gameContent.innerHTML = `
+                <div class="max-w-2xl mx-auto py-4 flex flex-col justify-between flex-grow space-y-6">
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-800 bg-gradient-to-b ${gradientAccent} space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <span class="${titleColor} font-black text-xs md:text-sm tracking-widest uppercase text-glow">
+                                ${feedbackTitle}
+                            </span>
+                            ${ptsAwarded > 0 ? `<span class="bg-emerald-950 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-full text-xs font-bold font-mono">+${ptsAwarded} PTS</span>` : ''}
+                        </div>
+
+                        <div class="space-y-4 py-2">
+                            <!-- Show correct answer if failed -->
+                            ${!isCorrect && !allowRetry ? `
+                                <div class="bg-red-950/20 border border-red-500/20 p-3 rounded-xl">
+                                    <p class="text-[10px] text-red-400 uppercase font-black">Correct Path Action:</p>
+                                    <p class="text-xs text-slate-300 font-medium italic mt-1">"${correctAnswerText}"</p>
+                                </div>
+                            ` : ''}
+
+                            <div>
+                                <p class="text-[10px] text-teal-400 uppercase font-black">
+                                    ${allowRetry ? "Analyze this key principle:" : "iTHINK Character Alignment & Virtues Explanation:"}
+                                </p>
+                                <p class="text-xs md:text-sm text-slate-200 leading-relaxed mt-1.5">
+                                    ${feedbackText}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Verification stamp icon -->
+                        <div class="flex items-center gap-2 pt-3 border-t border-slate-800/60">
+                            <span class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Lasallian Verification:</span>
+                            <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-teal-400 font-mono">Approved Active Mindset</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <button onclick="renderLevelSelect()" class="text-slate-400 hover:text-white text-xs font-semibold flex items-center gap-1 transition">
+                            ⇠ Back to Map
+                        </button>
+                        ${nextActionBtnHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function nextScenario() {
+            playSfx('click');
+            userState.currentScenarioIndex++;
+            userState.attempts = 0;
+            renderScenario();
+        }
+
+        function completeLevel() {
+            playSfx('correct');
+            // Check if there is a next level to unlock
+            if (userState.currentLevelIndex === userState.unlockedLevelIndex && userState.unlockedLevelIndex < 4) {
+                userState.unlockedLevelIndex++;
+            }
+
+            const isGameFinished = (userState.currentLevelIndex === 4);
+            
+            if (isGameFinished) {
+                userState.gameCompleted = true;
+                renderVictoryScreen();
+            } else {
+                renderLevelCompleteCelebration();
+            }
+        }
+
+        function renderLevelCompleteCelebration() {
+            updateHUD();
+            const finishedLvl = GAME_LEVELS[userState.currentLevelIndex];
+            
+            gameContent.innerHTML = `
+                <div class="max-w-2xl mx-auto py-6 flex flex-col items-center justify-center text-center space-y-6">
+                    <div class="w-20 h-20 bg-emerald-950/80 border border-emerald-400/40 rounded-full flex items-center justify-center animate-bounce shadow-lg green-glow">
+                        <svg class="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="text-purple-400 text-xs font-bold tracking-widest uppercase">CONGRATULATIONS!</span>
+                        <h2 class="text-2xl md:text-3xl font-extrabold heading-font text-white">
+                            Finished: ${finishedLvl.title}
+                        </h2>
+                        <p class="text-slate-300 text-xs md:text-sm max-w-md mx-auto leading-relaxed">
+                            You successfully resolved all digital citizenship and iTHINK dilemmas in this category. You have unlocked the next stage on your path to digital leadership.
+                        </p>
+                    </div>
+
+                    <!-- Level stats breakdown -->
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800 text-left w-full max-w-sm flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] text-slate-400 uppercase font-bold">Total Accumulated Score</p>
+                            <p class="text-xl font-bold heading-font text-white">${userState.score} points</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-slate-400 uppercase font-bold">Current Status</p>
+                            <p class="text-xs font-bold text-teal-400 uppercase">Active Leader</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button onclick="renderLevelSelect()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-purple-600 hover:from-emerald-400 hover:to-purple-500 text-white font-extrabold rounded-lg text-sm tracking-wider uppercase transition">
+                            Back to Level Map ➔
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderVictoryScreen() {
+            updateHUD();
+            gameContent.innerHTML = `
+                <div class="max-w-3xl mx-auto py-4 flex flex-col items-center space-y-6">
+                    <div class="text-center space-y-2">
+                        <div class="inline-block bg-purple-950 text-purple-300 border border-purple-500/30 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest text-glow animate-pulse">
+                            👑 EXCELLENCE ACHIEVED
+                        </div>
+                        <h2 class="text-2xl md:text-4xl font-extrabold heading-font text-white">
+                            Certified Lasallian Digital Leader
+                        </h2>
+                        <p class="text-slate-300 text-xs md:text-sm max-w-xl mx-auto">
+                            Marvelous effort, ${userState.playerName}! You have evaluated and completed all 25 critical digital citizenship scenarios. You have demonstrated the principles of the MLD Pledge and aligned your habits with the iTHINK virtues.
+                        </p>
+                    </div>
+
+                    <!-- Certificate Generation Area -->
+                    <div id="certificateContainer" class="w-full glass-panel p-6 rounded-2xl border-2 border-emerald-500/50 bg-gradient-to-br from-slate-950 to-emerald-950/20 relative shadow-2xl overflow-hidden max-w-xl">
+                        <!-- Background Decorative Star -->
+                        <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div class="border-2 border-emerald-400/20 p-4 rounded-xl space-y-4 text-center">
+                            <!-- Mini Header -->
+                            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                                <span class="text-[9px] text-emerald-400 font-bold uppercase tracking-widest">Digital Leadership Pledge</span>
+                                <span class="text-[9px] text-purple-400 font-bold uppercase tracking-widest">BRafeNHS NxGBL</span>
+                            </div>
+
+                            <div class="space-y-2 py-4">
+                                <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">This certifies that</span>
+                                <h3 class="text-xl md:text-2xl font-black heading-font text-white underline decoration-emerald-400 decoration-2 underline-offset-4">
+                                    ${userState.playerName}
+                                </h3>
+                                <p class="text-xs text-slate-300 max-w-sm mx-auto leading-relaxed mt-2">
+                                    has successfully navigated the 25 scenarios of the Digital Leadership simulator with a total score of <strong>${userState.score}</strong>.
+                                </p>
+                            </div>
+
+                            <!-- Avatar stamp -->
+                            <div class="flex justify-center items-center gap-3 py-1">
+                                <div class="w-12 h-12 rounded-full border border-teal-500 bg-slate-900 p-1">
+                                    ${AVATARS[userState.avatar].svg}
+                                </div>
+                                <div class="text-left text-xs">
+                                    <p class="font-bold text-white uppercase">${AVATARS[userState.avatar].name}</p>
+                                    <p class="text-[10px] text-slate-400 italic">Leader Representative Avatar</p>
+                                </div>
+                            </div>
+
+                            <!-- Pledge Commitment list -->
+                            <div class="text-left bg-slate-900/60 p-3 rounded-lg border border-slate-800 text-[10px] text-slate-300 space-y-1">
+                                <p class="font-bold text-emerald-400 uppercase tracking-wider mb-1">My Digital Leadership Commitment:</p>
+                                <p>✔ I use my MLD for learning anytime, anywhere, and as an active scholar.</p>
+                                <p>✔ I follow the classroom digital footprint standards in school and GCs.</p>
+                                <p>✔ I honestly declare AI use via the Tool, Purpose, Process, and Ownership framework.</p>
+                            </div>
+
+                            <!-- Signature Area -->
+                            <div class="pt-4 border-t border-slate-800/50 flex justify-between items-center text-[9px] text-slate-400">
+                                <div>
+                                    <p class="font-bold text-slate-300">iTHINK Virtues Council</p>
+                                    <p class="text-slate-500">Integrity & Honor Board</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-emerald-400">ANIMO MOVEMENT</p>
+                                    <p class="text-slate-500">NxGBL Program</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <button onclick="window.print()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-extrabold text-xs rounded-xl uppercase tracking-wider transition">
+                            Print / Save Certificate 🖨️
+                        </button>
+                        <button onclick="restartFullGame()" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-100 font-extrabold text-xs rounded-xl uppercase tracking-wider transition">
+                            Restart Simulator ↺
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function restartFullGame() {
+            playSfx('click');
+            userState = {
+                playerName: "Lasallian Student",
+                avatar: "riku",
+                score: 0,
+                currentLevelIndex: 0,
+                currentScenarioIndex: 0,
+                attempts: 0,
+                gameCompleted: false,
+                unlockedLevelIndex: 0
+            };
+            renderOnboarding();
+        }
+    </script>
+</body>
+</html>
